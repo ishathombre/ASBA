@@ -40,6 +40,29 @@ def training_run(model, output_dir, num_epochs, batch_size, train_dataset, val_d
     trainer.train() 
   
 
+def xml_to_df(xml_file):
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+
+    data = []
+    for sentence in root.findall('sentence'):
+        sentence_id = sentence.get('id')
+        text = sentence.find('text').text
+        
+        aspect_terms = sentence.find('aspectTerms')
+        if aspect_terms is not None:
+            for aspect_term in aspect_terms.findall('aspectTerm'):
+                term = aspect_term.get('term')
+                polarity = aspect_term.get('polarity')
+                from_index = aspect_term.get('from')
+                to_index = aspect_term.get('to')
+                data.append([sentence_id, text, term, polarity, from_index, to_index])
+        else:
+            data.append([sentence_id, text, None, None, None, None])
+
+    df = pd.DataFrame(data, columns=['sentence_id', 'text', 'term', 'polarity', 'from_index', 'to_index'])
+    return df
+
 def parse_data_2014(xml_path):
     container = []  # Initialize Container (List) for Parse Data
     sentences = ET.parse(xml_path).getroot()  # Get Sentence-Level Nodes
