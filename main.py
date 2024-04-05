@@ -5,12 +5,14 @@ import torch
 from datasets import Dataset
 from transformers import BertTokenizer, BertForSequenceClassification, AdamW
 from sklearn.model_selection import train_test_split
+import evaluate
+from transformers import TrainingArguments, Trainer
 
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+metric = evaluate.load("accuracy")
 
-def training_run(model, output_dir, num_epochs, batch_size, train_dataset):
+def training_run(model, output_dir, num_epochs, batch_size, train_dataset, val_dataset):
     epochs = num_epochs
-    batch_size = 16
+    batch_size = batch_size
     num_steps = len(train_dataset) * epochs // batch_size
     warmup_steps = num_steps // 10  # 10% of the training steps
     save_steps = num_steps // epochs    # Save a checkpoint at the end of each epoch
@@ -89,10 +91,13 @@ def compute_metrics(eval_pred):
     return metric.compute(predictions=predictions, references=labels)
 
 
-def setup_data(df):
+def setup_data(parsed_data, tokenizer, train_split, eval_split, test_split):
+
+    df = parsed_data
+    df = Dataset.from_pandas(df)
     
-    train_df = df.select([i for i in range(500)])
-    eval_df = df.select([i for i in range(500,1000)])
+    train_df = df.select([i for i in range(train_split)])
+    eval_df = df.select([i for i in range(train_split,eval_split)])
 
     label_map = {'negative': 0, 'neutral': 1, 'positive': 2, 'conflict':3}  # Mapping of string labels to integer values
 
@@ -117,6 +122,40 @@ def setup_data(df):
     val_dataset = ABSA_Dataset(eval_encodings, eval_labels)
 
     return train_dataset, val_dataset
+
+def compute_metrics(eval_pred):
+    """ evlaulations
+    code to compute the metrics after taking the
+    """
+    logits, labels = eval_pred
+    predictions = np.argmax(logits, axis=-1)
+    return metric.compute(predictions=predictions, references=labels)
+
+
+def setup_data_test(parsed_data, tokenizer):
+
+    df = parsed_data
+    df = Dataset.from_pandas(df)
+    
+    
+
+    label_map = {'negative': 0, 'neutral': 1, 'positive': 2, 'conflict':3}  # Mapping of string labels to integer values
+
+
+
+
+    test_texts = df['sentence']
+    test_labels = df['polarity']
+   
+
+
+
+    test_encodings = tokenizer(test_texts, padding="max_length", truncation=True, max_length=512)
+    
+
+    test_dataset = ABSA_Dataset(test_encodings, test_labels)
+
+    return test_dataset, test_dataset
 
 
 
