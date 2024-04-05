@@ -2,6 +2,8 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 import numpy as np
 import torch
+from torch import nn
+from torch.nn import Softmax
 from datasets import Dataset
 from transformers import BertTokenizer, BertForSequenceClassification, AdamW
 from transformers import RobertaTokenizer, RobertaModel, RobertaForSequenceClassification
