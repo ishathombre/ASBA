@@ -4,6 +4,7 @@ import numpy as np
 import torch
 from datasets import Dataset
 from transformers import BertTokenizer, BertForSequenceClassification, AdamW
+from transformers import RobertaTokenizer, RobertaModel, RobertaForSequenceClassification
 from sklearn.model_selection import train_test_split
 import evaluate
 from transformers import TrainingArguments, Trainer
