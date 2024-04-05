@@ -1,6 +1,12 @@
+import xml.etree.ElementTree as ET
+import pandas as pd
+import numpy as np
+import torch
+from datasets import Dataset
+from transformers import BertTokenizer, BertForSequenceClassification, AdamW
+from sklearn.model_selection import train_test_split
 
-
-tokenizer = RobertaTokenizer.from_pretrained('roberta-base')
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 def training_run(model, output_dir, num_epochs, batch_size, train_dataset):
     epochs = num_epochs
@@ -83,11 +89,8 @@ def compute_metrics(eval_pred):
     return metric.compute(predictions=predictions, references=labels)
 
 
-def setup_data(parsed_data):
-    df = parsed_data
-
-    df = Dataset.from_pandas(df)
-
+def setup_data(df):
+    
     train_df = df.select([i for i in range(500)])
     eval_df = df.select([i for i in range(500,1000)])
 
@@ -114,5 +117,6 @@ def setup_data(parsed_data):
     val_dataset = ABSA_Dataset(eval_encodings, eval_labels)
 
     return train_dataset, val_dataset
+
 
 
