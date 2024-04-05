@@ -78,9 +78,9 @@ def compute_metrics(eval_pred):
     """ evlaulations
     code to compute the metrics after taking the
     """
-        logits, labels = eval_pred
-        predictions = np.argmax(logits, axis=-1)
-        return metric.compute(predictions=predictions, references=labels)
+    logits, labels = eval_pred
+    predictions = np.argmax(logits, axis=-1)
+    return metric.compute(predictions=predictions, references=labels)
 
 
 def setup_data(parsed_data):
