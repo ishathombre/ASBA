@@ -38,7 +38,6 @@ def training_run(model, output_dir, num_epochs, batch_size, train_dataset, val_d
     trainer.train() 
   
 
-
 def parse_data_2014(xml_path):
     container = []  # Initialize Container (List) for Parse Data
     sentences = ET.parse(xml_path).getroot()  # Get Sentence-Level Nodes
@@ -81,8 +80,6 @@ class ABSA_Dataset(torch.utils.data.Dataset):
 
 
 
-
-
 def compute_metrics(eval_pred):
     """ evlaulations
     code to compute the metrics after taking the
@@ -114,8 +111,6 @@ def setup_data(parsed_data, tokenizer, train_split, eval_split, test_split):
     eval_labels = eval_df['polarity']
     eval_labels =  [label_map[label] for label in eval_labels]
 
-
-
     train_encodings = tokenizer(train_texts, padding="max_length", truncation=True, max_length=512)
     eval_encodings = tokenizer(eval_texts, padding="max_length", truncation=True, max_length=512)
 
@@ -125,9 +120,6 @@ def setup_data(parsed_data, tokenizer, train_split, eval_split, test_split):
     return train_dataset, val_dataset
 
 def compute_metrics(eval_pred):
-    """ evlaulations
-    code to compute the metrics after taking the
-    """
     logits, labels = eval_pred
     predictions = np.argmax(logits, axis=-1)
     return metric.compute(predictions=predictions, references=labels)
