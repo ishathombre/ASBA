@@ -2,7 +2,7 @@
 ## Aspect-based sentiment analysis
 
 TO DO:
-1) fix evaluation
+1) fix evaluation (almost done)
 
 Pipeline:
 - fine-tune BERT, roBERTa and maybe DeBerta on ABSA task using SemEval-2014 Task-4 (https://paperswithcode.com/dataset/semeval-2014-task-4-sub-task-2)
