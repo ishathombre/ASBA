@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from transformers import BertModel
+from transformers import BertModel, BertForSequenceClassification
 
 class CustomBERTForAspectPolarization(BertForSequenceClassification):
     def __init__(self, config, num_aspect_labels, num_polarization_labels):
