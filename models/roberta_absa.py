@@ -30,3 +30,4 @@ class RobertaForASBA(RobertaForSequenceClassification):
             total_loss = None
 
         return total_loss, aspect_loss, polarization_loss, aspect_logits, polarization_logits
+
