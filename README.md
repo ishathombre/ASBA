@@ -1,13 +1,10 @@
 # ASBA (or as everybody else says, ABSA)
 ## Aspect-based sentiment analysis
 
-TO DO:
-1) fix evaluation (almost done)
-
 Pipeline:
 - fine-tune BERT, roBERTa and maybe DeBerta on ABSA task using SemEval-2014 Task-4 (https://paperswithcode.com/dataset/semeval-2014-task-4-sub-task-2)
 - you can find the used datasets in this repo under the folder [Datasets]
-- Code for our deep learning assignment
+- yu can find the code used in the colab notebook provided
 
 We used huggingfaces pre-trained models to fine-tune for the task and their tokenizers to encode the input. Find below a summary of the necessary steps to finetune a BERT model to classify both the aspect and the polarity of a sentence (based on the aspect).
 
