@@ -177,8 +177,7 @@ def testing_run(model, batch_size, test_dataset):
     polarization_accuracy = correct_polarization_predictions / total_samples
 
     print(f'Average Test Loss: {average_loss}')
-    print(f'Aspect Accuracy: {aspect_accuracy}')
-    print(f'Polarization Accuracy: {polarization_accuracy}')
+   
 
 
-_, test_dataset= setup_data(rests, tokenizer, 2970, 3714)
+
