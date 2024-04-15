@@ -17,6 +17,46 @@ from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 
+class ABSA_Dataset(torch.utils.data.Dataset):
+    def __init__(self, encodings, labels):
+        self.encodings = encodings
+        self.labels = labels
+
+    def __getitem__(self, idx):
+        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        item['labels'] = torch.tensor([label[idx] for label in self.labels])  # Assuming self.labels is a list of lists
+        return item
+
+    def __len__(self):
+        return len(self.labels[0])  # Assuming all labels have the same length
+
+class BertForASBA(BertForSequenceClassification):
+    def __init__(self, config, num_aspect_labels, num_polarization_labels):
+        super().__init__(config)
+        self.bert = BertModel(config)
+        self.aspect_classifier = nn.Linear(config.hidden_size, num_aspect_labels)
+        self.polarization_classifier = nn.Linear(config.hidden_size, num_polarization_labels)
+        self.dropout = nn.Dropout(config.hidden_dropout_prob)
+
+    def forward(self, input_ids=None, attention_mask=None, token_type_ids=None, position_ids=None, labels=None):
+        outputs = self.bert(input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids, position_ids=position_ids)
+        #print(outputs)
+        pooled_output = self.dropout(outputs)
+        aspect_logits = self.aspect_classifier(pooled_output)
+        polarization_logits = self.polarization_classifier(pooled_output)
+
+        aspect_loss = None
+        polarization_loss = None
+        if labels is not None:
+            aspect_loss = F.cross_entropy(aspect_logits, labels[:,0])
+            polarization_loss = F.cross_entropy(polarization_logits, labels[:,1])
+            total_loss = aspect_loss + polarization_loss
+        else:
+            total_loss = None
+
+        return total_loss, aspect_loss, polarization_loss, aspect_logits, polarization_logits
+
+
 def xml_to_df(xml_file):
     tree = ET.parse(xml_file)
     root = tree.getroot()
@@ -68,20 +108,7 @@ def parse_data_2014(xml_file):
             container.append(row)
 
     return pd.DataFrame(container)
-
-class ABSA_Dataset(torch.utils.data.Dataset):
-    def __init__(self, encodings, labels):
-        self.encodings = encodings
-        self.labels = labels
-
-    def __getitem__(self, idx):
-        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
-        item['labels'] = torch.tensor([label[idx] for label in self.labels])  # Assuming self.labels is a list of lists
-        return item
-
-    def __len__(self):
-        return len(self.labels[0])  # Assuming all labels have the same length
-
+    
 
 def setup_data(parsed_data, tokenizer, train_split, eval_split):
 
@@ -114,32 +141,6 @@ def setup_data(parsed_data, tokenizer, train_split, eval_split):
 
     return train_dataset, val_dataset
     
-
-class BertForASBA(BertForSequenceClassification):
-    def __init__(self, config, num_aspect_labels, num_polarization_labels):
-        super().__init__(config)
-        self.bert = BertModel(config)
-        self.aspect_classifier = nn.Linear(config.hidden_size, num_aspect_labels)
-        self.polarization_classifier = nn.Linear(config.hidden_size, num_polarization_labels)
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
-
-    def forward(self, input_ids=None, attention_mask=None, token_type_ids=None, position_ids=None, labels=None):
-        outputs = self.bert(input_ids, attention_mask=attention_mask, token_type_ids=token_type_ids, position_ids=position_ids)
-        #print(outputs)
-        pooled_output = self.dropout(outputs)
-        aspect_logits = self.aspect_classifier(pooled_output)
-        polarization_logits = self.polarization_classifier(pooled_output)
-
-        aspect_loss = None
-        polarization_loss = None
-        if labels is not None:
-            aspect_loss = F.cross_entropy(aspect_logits, labels[:,0])
-            polarization_loss = F.cross_entropy(polarization_logits, labels[:,1])
-            total_loss = aspect_loss + polarization_loss
-        else:
-            total_loss = None
-
-        return total_loss, aspect_loss, polarization_loss, aspect_logits, polarization_logits
 
 
 #importing tokenizer
