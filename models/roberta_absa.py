@@ -228,7 +228,7 @@ def training_run(model, num_epochs, batch_size, train_dataset, val_dataset):
     return training_aspect, training_polarization, validation_aspect, validation_polarization
 
 
- training_aspect, training_polarization, validation_aspect, validation_polarization = training_run(model, 20, 16, train_dataset, val_dataset)
+
 
 
 def testing_run(model, batch_size, test_dataset):
@@ -283,4 +283,4 @@ def testing_run(model, batch_size, test_dataset):
 
 
 _, test_dataset= setup_data(rests, tokenizer, 2970, 3714)
-training_run(model, 20, 16, test_dataset)
+
