@@ -1,3 +1,15 @@
+class ABSA_Dataset(torch.utils.data.Dataset):
+    def __init__(self, encodings, labels):
+        self.encodings = encodings
+        self.labels = labels
+
+    def __getitem__(self, idx):
+        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        item['labels'] = torch.tensor([label[idx] for label in self.labels])  # Assuming self.labels is a list of lists
+        return item
+
+    def __len__(self):
+        return len(self.labels[0])  # Assuming all labels have the same length
 
 def parse_data_2014(xml_file):
     container = []  # Initialize Container (List) for Parse Data
@@ -35,19 +47,6 @@ df.head(10)
 
 
 rests = parse_data_2014("/kaggle/input/restaurants-train/Restaurants_Train.xml")
-
-class ABSA_Dataset(torch.utils.data.Dataset):
-    def __init__(self, encodings, labels):
-        self.encodings = encodings
-        self.labels = labels
-
-    def __getitem__(self, idx):
-        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
-        item['labels'] = torch.tensor([label[idx] for label in self.labels])  # Assuming self.labels is a list of lists
-        return item
-
-    def __len__(self):
-        return len(self.labels[0])  # Assuming all labels have the same length
 
 
 def setup_data(parsed_data, tokenizer, train_split, eval_split):
