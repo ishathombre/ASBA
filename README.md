@@ -2,7 +2,7 @@
 ## Aspect-based sentiment analysis
 
 Pipeline:
-- we fine-tuned BERT, roBERTa and DeBerta on ABSA task using SemEval-2014 Task-4 (https://paperswithcode.com/dataset/semeval-2014-task-4-sub-task-2)
+- we fine-tuned BERT, roBERTa and DeBerta on ABSA task using SemEval-2014 Task-4 (https://paperswithcode.com/dataset/semeval-2014-task-4-sub-task-2) --> find the code used in the colab notebook, you can run the testing on the checkpoints provided - downoload available in the notebook - just keep in mind that it will may take a while for running the testing on CPU (approx. 30 minutes)
 - we modified the models with a custom class to add 2 linear layers on top of them for double classification (aspects and polarities)
 - you can find the used datasets in this repo under the folder [Datasets]
 
