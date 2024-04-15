@@ -49,3 +49,4 @@ def training_run(model, output_dir, num_epochs, batch_size, train_dataset, val_d
 
     # Start training
     trainer.train()
+    #trainer.evaluate()
