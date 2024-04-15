@@ -279,5 +279,5 @@ def testing_run(model, batch_size, test_dataset):
     print(f'Polarization Accuracy: {polarization_accuracy}')
 
 
-_, test_dataset= setup_data(rests, tokenizer, 2970, 3714)
+
 
