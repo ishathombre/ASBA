@@ -148,7 +148,7 @@ train_dataset, val_dataset= setup_data(rests, tokenizer, 2228, 2970)
 
 num_aspect_labels = 4
 num_polarization_labels = 5
-model = DebertaForASBA.from_pretrained('roberta-base', num_aspect_labels=num_aspect_labels, num_polarization_labels=num_polarization_labels)
+model = RobertaForASBA.from_pretrained('roberta-base', num_aspect_labels=num_aspect_labels, num_polarization_labels=num_polarization_labels)
 
 
 def training_run(model, num_epochs, batch_size, train_dataset, val_dataset):
